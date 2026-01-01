@@ -49,11 +49,20 @@ def draw_square(screen, i, j):
           (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
           (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
         ))
+    pygame.draw.polygon(screen, BLACK,
+		( (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP)),
+		  (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP)),
+		  (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
+		  (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
+		), 2)
 
 def draw_stone(screen, i, j, color):
     pygame.draw.circle(screen, color, 
         (ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
         RAD)
+    pygame.draw.circle(screen, BLACK, 
+		(ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
+		RAD, 2)
 
 def draw_board(curr_player = 0, end = False):
     'on fresh screen, draw grid, stones, player turn mark, then make it appear'
@@ -67,6 +76,9 @@ def draw_board(curr_player = 0, end = False):
         'colored rectangle indicates who plays next'
         pygame.draw.rect(screen, PLAYER_COLOR[curr_player], 
         (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT)
+        )
+        pygame.draw.rect(screen, BLACK, 
+            (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT), 2
         )
     pygame.display.flip()
 
