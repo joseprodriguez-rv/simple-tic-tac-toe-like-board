@@ -39,8 +39,12 @@ stones, select_st, move_st, draw_txt = set_board_up()
 
 # Grid:
 def trans_coord(x, y):
-    'translates pixel coordinates into board coordinates'
-    return round((x - ROOM - SEP - 0.5*SLOT)/(SEP + SLOT)), round((y - SEP - 0.5*SLOT)/(SEP + SLOT))
+    i = ((x - ROOM - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la columna de la matriu
+	j = ((y - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la fila de la matriu obtenint la casella exacta
+if 0 <= i < BSIZ and BSIZ> j >= 0:
+	return i,j
+return -1,-1 # Si clica fora del tauler retorna -1
+
 
 def draw_square(screen, i, j):
     pygame.draw.polygon(screen, GRAY,
