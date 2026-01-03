@@ -52,22 +52,22 @@ def draw_square(screen, i, j):
           (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP)),
           (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
           (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
-        ))
+        )) 
+#Dibuixa les vores de les caselles
     pygame.draw.polygon(screen, BLACK,
 		( (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP)),
 		  (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP)),
 		  (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
 		  (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
 		), 2)
-
 def draw_stone(screen, i, j, color):
     pygame.draw.circle(screen, color, 
         (ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
         RAD)
+#Dibuixa les vores de les fitxes
     pygame.draw.circle(screen, BLACK, 
 		(ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
 		RAD, 2)
-
 def draw_board(curr_player = 0, end = False):
     'on fresh screen, draw grid, stones, player turn mark, then make it appear'
     screen.fill(WHITE if not end else GRAY)
@@ -81,6 +81,7 @@ def draw_board(curr_player = 0, end = False):
         pygame.draw.rect(screen, PLAYER_COLOR[curr_player], 
         (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT)
         )
+#Dibuixa les vores de l'indicador de torn
         pygame.draw.rect(screen, BLACK, 
             (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT), 2
         )
@@ -111,14 +112,17 @@ while not done:
             "User clicked 'close window', set flag to exit loop"
             done = True
         if event.type == pygame.MOUSEBUTTONDOWN and not end:
-            "game is afoot and user clicked something"
-            if stone_selected:
-                "User should click on a free destination square, otherwise ignore event"
-                stone_selected, curr_player, end = move_st(*trans_coord(*event.pos))
-                draw_board(curr_player, end)
-            else:
-                "User should click on a stone to select it"
-                stone_selected = select_st(*trans_coord(*event.pos))
-
+				i,j = trans_coord(*event.pos)
+			 "game is afoot and user clicked something"
+				#Únicament mou o selecciona fitxa dins dels límits del tauler
+				if i != -1:
+					"User should click on a free destination square, otherwise ignore event"
+					if stone_selected:
+                		stone_selected, curr_player, end = move_st(i,j)
+					else:
+						stone_selected = select_st(i,j)
+				else:
+					print("Per moure una fitxa has de clickar dins dels límits del tauler")
+	draw_board(curr_player, end)
 # Friendly finish-up:
 pygame.quit()
