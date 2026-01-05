@@ -12,6 +12,7 @@ import pygame
 # Import: colors BLACK, GRAY, WHITE, PLAYER_COLOR; 
 #         board dimensions BSIZ, WIDTH, HEIGHT, SLOT, SEP, ROOM, RAD
 from constants import *
+pygame.font.init() #Iniciem el sistema de textos de pygame per poder enunciar el guanyador
 
 # Initialize the game engine, indicate a caption and
 # set the height and width of the screen.
@@ -39,11 +40,11 @@ stones, select_st, move_st, draw_txt = set_board_up()
 
 # Grid:
 def trans_coord(x, y):
-    i = ((x - ROOM - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la columna de la matriu
-	j = ((y - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la fila de la matriu obtenint la casella exacta
+    i = ((x - ROOM - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la columna de la matriu.
+	j = ((y - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la fila de la matriu obtenint la casella exacta.
 if 0 <= i < BSIZ and BSIZ> j >= 0:
 	return i,j
-return -1,-1 # Si clica fora del tauler retorna -1
+return -1,-1 # Si clica fora del tauler retorna -1.
 
 
 def draw_square(screen, i, j):
@@ -53,7 +54,7 @@ def draw_square(screen, i, j):
           (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
           (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
         )) 
-#Dibuixa les vores de les caselles
+#Dibuixa les vores de les caselles.
     pygame.draw.polygon(screen, BLACK,
 		( (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP)),
 		  (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP)),
@@ -64,7 +65,7 @@ def draw_stone(screen, i, j, color):
     pygame.draw.circle(screen, color, 
         (ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
         RAD)
-#Dibuixa les vores de les fitxes
+#Dibuixa les vores de les fitxes.
     pygame.draw.circle(screen, BLACK, 
 		(ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
 		RAD, 2)
@@ -86,6 +87,25 @@ def draw_board(curr_player = 0, end = False):
             (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT), 2
         )
     pygame.display.flip()
+#Dibuixa com serà el missatge.
+def dibuixa_missatge_guanyador(screen,curr_player):
+	#Escull tipus de lletra i forma el missatge (.render() crea una imatge del text i la suavitza).
+	tipus_lletra = pygame.font.SysFont('Arial',40)
+	text_final = f"Victoria del Jugador {curr_player}"
+   	missatge = tipus_lletra.render(text_final, True, BLACK)
+    #Creem un fons
+   	amplada_fons, altura_fons = 400, 100
+    #Centrem el fons a la pantalla.
+   	fons = pygame.Rect(0, 0, amplada_fons, altura_fons)
+   	fons.center = (WIDTH // 2, HEIGHT // 2) 
+    
+    #Centrem també el missatge.
+    text = missatge.get_rect(center=fons.center)
+    
+    #Dibuixa primer el fons blanc i després el text a sobre.
+    pygame.draw.rect(screen, WHITE, fons)
+   	pygame.draw.rect(screen, BLACK, fons, 3) #Afegeix una vora.
+    screen.blit(missatge, text)
 
 # set_board_up() already selects a first stone; set curr_player to zero.
 stone_selected = True
@@ -114,7 +134,7 @@ while not done:
         if event.type == pygame.MOUSEBUTTONDOWN and not end:
 				i,j = trans_coord(*event.pos)
 			 "game is afoot and user clicked something"
-				#Únicament mou o selecciona fitxa dins dels límits del tauler
+				#Únicament mou o selecciona fitxa dins dels límits del tauler.
 				if i != -1:
 					"User should click on a free destination square, otherwise ignore event"
 					if stone_selected:
@@ -123,6 +143,11 @@ while not done:
 						stone_selected = select_st(i,j)
 				else:
 					print("Per moure una fitxa has de clickar dins dels límits del tauler")
-	draw_board(curr_player, end)
+	#Afegim screen i stones per poder dibuixar a sobre i dibuixem el missatge guanyador, definit prèviament, al finalitzar la partida.
+	draw_board(screen,stones,curr_player, end)
+	if end:
+		dibuixa_missatge_guanyador(screen,curr_player)
+	#Actualitzem la pantalla amb .display.update().
+	pygame.display.update()
 # Friendly finish-up:
 pygame.quit()
