@@ -103,29 +103,28 @@ def draw_board(curr_player = 0, end = False):
     pygame.display.flip()
 
 #Dibuixa com serà el missatge.
-def dibuixa_missatge_guanyador(screen,curr_player):
-    #Escull tipus de lletra i forma el missatge (.render() crea una imatge del text i la suavitza).
-    tipus_lletra = pygame.font.SysFont('Arial', 60) # HE CANVIAT LA MIDA A 60
+def dibuixa_missatge_guanyador(screen, curr_player):
+    #Mida de la caixa, el retangle on hi haurà el missatge
+    amplada_caixa = WIDTH - 40
+    altura_caixa = 150
+    #Calcula la posició per centrar-ho
+    pos_x = 20
+    pos_y = (HEIGHT - altura_caixa) // 2
+    dimensions_rect = (pos_x, pos_y, amplada_caixa, altura_caixa)
+    #Posa la mida de la lletra
+    tipus_lletra = pygame.font.SysFont('Arial', 50)
     text_final = f"Victoria del Jugador {curr_player + 1}"
-    missatge = tipus_lletra.render(text_final, True, WHITE) # HE POSAT LLETRA WHITE (BLANCA)
-    #Creem un fons
-    amplada_fons, altura_fons = 550, 120 # HE FET EL QUADRE MES GRAN
-    #Centrem el fons a la pantalla.
-    fons = pygame.Rect(0, 0, amplada_fons, altura_fons)
-    fons.center = (WIDTH // 2, HEIGHT // 2) 
     
-    #Centrem també el missatge.
-    text = missatge.get_rect(center=fons.center)
+    imatge_text = tipus_lletra.render(text_final, True, WHITE)
+    rect_text = imatge_text.get_rect()
+    #Dibuixa fons i vora
+    pygame.draw.rect(screen, BLACK, dimensions_rect)
+    pygame.draw.rect(screen, WHITE, dimensions_rect, 2)
+    #Centra el text a la pantalla
+    rect_text.center = (WIDTH // 2, HEIGHT // 2)
+    screen.blit(imatge_text, rect_text)
     
-    #Dibuixa primer el fons NEGRE (perque es vegi la lletra blanca) i després el text a sobre.
-    pygame.draw.rect(screen, BLACK, fons) 
-    pygame.draw.rect(screen, WHITE, fons, 3) # HE POSAT LA VORA BLANCA
-    screen.blit(missatge, text)
     pygame.display.flip()
-
-# set_board_up() ja selecciona una primera fitxa; estableix curr_player a zero
-stone_selected = True
-curr_player = 0
 
 # Mostra la quadrícula i les pedres:
 draw_board()
