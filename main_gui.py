@@ -40,17 +40,6 @@ pygame.display.set_caption("X en ratlla")
 clock = pygame.time.Clock()
 
 # Prepara el tauler:
-# això configurarà totes les pedres com a no jugades, seleccionarà una primera fitxa per jugar,
-# i obtindrà funcions per gestionar-les de la següent manera:
-# la crida stones() permet fer un bucle sobre totes les fitxes,
-# la crida select_st(i, j) marca com a seleccionada la fitxa en aquestes coordenades,
-# la crida move_st(i, j)
-# si la casella en aquestes coordenades està lliure, mou la fitxa seleccionada
-# allà, canvia de jugador, desselecciona la fitxa i comprova el
-# final de la partida; altrament, no fa res, deixant la fitxa seleccionada;
-# retorna: bool "pedra encara seleccionada", següent jugador (pot ser el mateix),
-# i bool "final de la partida"
-# la crida a draw_txt(end) imprimeix una versió basada en text del tauler
 stones, select_st, move_st, draw_txt = set_board_up(ST_PLAYER, BSIZ, GAME_MODE)
 
 # Quadrícula:
@@ -126,6 +115,10 @@ def dibuixa_missatge_guanyador(screen, curr_player):
     
     pygame.display.flip()
 
+# Inicialització de variables globals que faltaven
+stone_selected = True
+curr_player = 0
+
 # Mostra la quadrícula i les pedres:
 draw_board()
 
@@ -145,14 +138,14 @@ while not done:
     for event in pygame.event.get(): 
         "l'usuari ha fet algo"
         if event.type == pygame.QUIT:
-            "User clicked 'close window', set flag to exit loop"
+         'L'usuari ha fet clic a 'tancar finestra', ha establert la bandera per sortir del bucle.'
             done = True
         if event.type == pygame.MOUSEBUTTONDOWN and not end:
             i,j = trans_coord(*event.pos)
-            "game is afoot and user clicked something"
+            "El joc està en marxa i l'usuari ha fet clic a alguna cosa"
             #Únicament mou o selecciona fitxa dins dels límits del tauler.
             if i != -1:
-                "User should click on a free destination square, otherwise ignore event"
+                "L'usuari ha de fer clic en una casella de destinació lliure; en cas contrari, ignora l'esdeveniment."
                 if stone_selected:
                     stone_selected, curr_player, end = move_st(i,j)
                 else:
