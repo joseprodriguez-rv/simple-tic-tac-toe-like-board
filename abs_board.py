@@ -1,3 +1,4 @@
+
 from constants import PLAYER_COLOR, NO_PLAYER, GRAY
 from collections import namedtuple
 
@@ -34,25 +35,44 @@ def set_board_up(stones_per_player, size, game_mode=0):
 
     def end():
         p = state['current_player']
-        n = BSIZ  
+        n = BSIZ
 
-        for row in board:
-            if row.count(p) == n:
+        for i in range(n):
+            comptador = 0 
+            for j in range(n):
+
+                if board[i][j] == p:
+                    comptador += 1
+            
+
+            if comptador == n:
                 return True
 
-        for x in range(n):
-            columna = [board[y][x] for y in range(n)]
-            if columna.count(p) == n:
+        for j in range(n):
+            comptador = 0
+            for i in range(n):
+                if board[i][j] == p:
+                    comptador += 1
+            
+            if comptador == n:
                 return True
 
-        diag1 = [board[i][i] for i in range(n)]
-        if diag1.count(p) == n:
+        comptador = 0
+        for i in range(n):
+            if board[i][i] == p:
+                comptador += 1
+        if comptador == n:
             return True
 
-        diag2 = [board[i][n-1-i] for i in range(n)]
-        if diag2.count(p) == n:
+        comptador = 0
+        for i in range(n):
+
+            if board[i][n - 1 - i] == p:
+                comptador += 1
+        if comptador == n:
             return True
 
+        return False
         return False
     
     def check_winner_logic():
