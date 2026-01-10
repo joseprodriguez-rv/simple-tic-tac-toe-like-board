@@ -1,4 +1,3 @@
-
 # Importa la biblioteca per a la programació de jocs
 import pygame
 
@@ -7,10 +6,16 @@ import pygame
 from constants import *
 pygame.font.init() #Inicia el sistema de textos de pygame per poder enunciar el guanyador
 
+# Inicialització d'importació del tauler abstracte programat per separat:
+from abs_board import set_board_up
 
 # 1. DEMANAR LA MIDA A L'USUARI
 str_input = input("Introdueix la mida del tauler (ex: 3, 4, 5...): ")
 BSIZ = int(str_input)
+
+print("Tria el mode (0: Clàssic, 1: Invers): ")
+mode_input = input("Mode: ")
+GAME_MODE = int(mode_input)
 
 # 2. FER ELS CÀLCULS AQUÍ (Abans eren a constants.py)
 HEIGHT = BSIZ * SLOT + (BSIZ + 1) * SEP + ROOM 
@@ -26,9 +31,6 @@ screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
 pygame.display.set_caption("X en ratlla")
 clock = pygame.time.Clock()
 
-# Inicialització d'importació del tauler abstracte programat per separat:
-from abs_board import set_board_up
-
 # Prepara el tauler:
 # això configurarà totes les pedres com a no jugades, seleccionarà una primera fitxa per jugar,
 # i obtindrà funcions per gestionar-les de la següent manera:
@@ -41,15 +43,15 @@ from abs_board import set_board_up
 # retorna: bool "pedra encara seleccionada", següent jugador (pot ser el mateix),
 # i bool "final de la partida"
 # la crida a draw_txt(end) imprimeix una versió basada en text del tauler
-stones, select_st, move_st, draw_txt = set_board_up()
+stones, select_st, move_st, draw_txt = set_board_up(ST_PLAYER, BSIZ, GAME_MODE)
 
 # Quadrícula:
 def trans_coord(x, y):
     i = ((x - ROOM - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la columna de la matriu.
-	j = ((y - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la fila de la matriu obtenint la casella exacta.
-if 0 <= i < BSIZ and BSIZ> j >= 0:
-	return i,j
-return -1,-1 # Si clica fora del tauler retorna -1.
+    j = ((y - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la fila de la matriu obtenint la casella exacta.
+    if 0 <= i < BSIZ and 0 <= j < BSIZ:
+        return i,j
+    return -1,-1 # Si clica fora del tauler retorna -1.
 
 def draw_square(screen, i, j):
     pygame.draw.polygon(screen, GRAY,
@@ -60,31 +62,29 @@ def draw_square(screen, i, j):
         ))
 #Dibuixa les vores de les caselles.
     pygame.draw.polygon(screen, BLACK,
-		( (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP)),
-		  (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP)),
-		  (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
-		  (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
-		), 2)
+        ( (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP)),
+          (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP)),
+          (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
+          (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
+        ), 2)
 
 def draw_stone(screen, i, j, color):
-    pygame.draw.circle(screen, color, 
-        (ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
-        RAD)
+    cx = int(ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP))
+    cy = int(0.5*SEP + (j + 0.5)*(SLOT + SEP))
+    pygame.draw.circle(screen, color, (cx, cy), int(RAD))
 #Dibuixa les vores de les fitxes.
-    pygame.draw.circle(screen, BLACK, 
-		(ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
-		RAD, 2)
+    pygame.draw.circle(screen, BLACK, (cx, cy), int(RAD), 2)
 
 def draw_board(curr_player = 0, end = False):
-    'on fresh screen, draw grid, stones, player turn mark, then make it appear'
+  'en una pantalla nova, dibuixa una quadrícula, fitxes, la marca del torn del jugador i fes-la aparèixer.'
     screen.fill(WHITE if not end else GRAY)
     for i in range(BSIZ):
         for j in range(BSIZ):
             draw_square(screen, i, j)
     for s in stones():
-        draw_stone(screen, *s)
+        draw_stone(screen, s.x, s.y, s.color)
     if not end:
-        'colored rectangle indicates who plays next'
+       'el ractangle de color indica a qui li toca'
         pygame.draw.rect(screen, PLAYER_COLOR[curr_player], 
         (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT)
         )
@@ -96,23 +96,24 @@ def draw_board(curr_player = 0, end = False):
 
 #Dibuixa com serà el missatge.
 def dibuixa_missatge_guanyador(screen,curr_player):
-	#Escull tipus de lletra i forma el missatge (.render() crea una imatge del text i la suavitza).
-	tipus_lletra = pygame.font.SysFont('Arial',40)
-	text_final = f"Victoria del Jugador {curr_player}"
-   	missatge = tipus_lletra.render(text_final, True, BLACK)
+    #Escull tipus de lletra i forma el missatge (.render() crea una imatge del text i la suavitza).
+    tipus_lletra = pygame.font.SysFont('Arial',40)
+    text_final = f"Victoria del Jugador {curr_player + 1}"
+    missatge = tipus_lletra.render(text_final, True, BLACK)
     #Creem un fons
-   	amplada_fons, altura_fons = 400, 100
+    amplada_fons, altura_fons = 400, 100
     #Centrem el fons a la pantalla.
-   	fons = pygame.Rect(0, 0, amplada_fons, altura_fons)
-   	fons.center = (WIDTH // 2, HEIGHT // 2) 
+    fons = pygame.Rect(0, 0, amplada_fons, altura_fons)
+    fons.center = (WIDTH // 2, HEIGHT // 2) 
     
     #Centrem també el missatge.
     text = missatge.get_rect(center=fons.center)
     
     #Dibuixa primer el fons blanc i després el text a sobre.
     pygame.draw.rect(screen, WHITE, fons)
-   	pygame.draw.rect(screen, BLACK, fons, 3) #Afegeix una vora.
+    pygame.draw.rect(screen, BLACK, fons, 3) #Afegeix una vora.
     screen.blit(missatge, text)
+    pygame.display.flip()
 
 # set_board_up() ja selecciona una primera fitxa; estableix curr_player a zero
 stone_selected = True
@@ -134,30 +135,30 @@ while not done:
 # Si ometem això, utilitzarem tota la CPU que puguem.
     clock.tick(10)
     
-  for event in pygame.event.get(): 
-        "User did something"
+    for event in pygame.event.get(): 
+        "l'usuari ha fet algo"
         if event.type == pygame.QUIT:
             "User clicked 'close window', set flag to exit loop"
             done = True
         if event.type == pygame.MOUSEBUTTONDOWN and not end:
-				i,j = trans_coord(*event.pos)
-			 "game is afoot and user clicked something"
-				#Únicament mou o selecciona fitxa dins dels límits del tauler.
-				if i != -1:
-					"User should click on a free destination square, otherwise ignore event"
-					if stone_selected:
-                		stone_selected, curr_player, end = move_st(i,j)
-					else:
-						stone_selected = select_st(i,j)
-				else:
-					print("Per moure una fitxa has de clickar dins dels límits del tauler")
+            i,j = trans_coord(*event.pos)
+            "game is afoot and user clicked something"
+            #Únicament mou o selecciona fitxa dins dels límits del tauler.
+            if i != -1:
+                "User should click on a free destination square, otherwise ignore event"
+                if stone_selected:
+                    stone_selected, curr_player, end = move_st(i,j)
+                else:
+                    stone_selected = select_st(i,j)
+                
+                draw_board(curr_player, end)
 
-	#Afegim screen i stones per poder dibuixar a sobre i dibuixem el missatge guanyador, definit prèviament, al finalitzar la partida.
-	draw_board(screen,stones,curr_player, end)
-	if end:
-		dibuixa_missatge_guanyador(screen,curr_player)
+                if end:
+                    dibuixa_missatge_guanyador(screen,curr_player)
+            else:
+                print("Per moure una fitxa has de clickar dins dels límits del tauler")
+
 	#Actualitzem la pantalla amb .display.update().
-	pygame.display.update()
+    pygame.display.update()
 # Final:
 pygame.quit()
-	pygame.display.flip()
