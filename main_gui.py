@@ -9,17 +9,9 @@ pygame.font.init() #Inicia el sistema de textos de pygame per poder enunciar el 
 # Inicialització d'importació del tauler abstracte programat per separat:
 from abs_board import set_board_up
 
-try:
-    str_input = input("Introdueix la mida del tauler (ex: 3, 4, 5...): ")
-    BSIZ = int(str_input)
-except ValueError:
-    BSIZ = 3
-#tria el mode
-try:
-    mode_input = input("Tria el mode (0: Clàssic, 1: Invers): ")
-    GAME_MODE = int(mode_input)
-except ValueError:
-    GAME_MODE = 0
+# 1. DEMANAR LA MIDA A L'USUARI
+str_input = input("Introdueix la mida del tauler (ex: 3, 4, 5...): ")
+BSIZ = int(str_input)
 
 print("Tria el mode (0: Clàssic, 1: Invers): ")
 mode_input = input("Mode: ")
@@ -68,7 +60,7 @@ def draw_square(screen, i, j):
           (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP) + SLOT),
           (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP) + SLOT)
         ))
-#Dibuixa les vores de les caselles.
+    #Dibuixa les vores de les caselles.
     pygame.draw.polygon(screen, BLACK,
         ( (ROOM + SEP + i*(SLOT + SEP), SEP + j*(SLOT + SEP)),
           (ROOM + SEP + i*(SLOT + SEP) + SLOT, SEP + j*(SLOT + SEP)),
@@ -80,11 +72,11 @@ def draw_stone(screen, i, j, color):
     cx = int(ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP))
     cy = int(0.5*SEP + (j + 0.5)*(SLOT + SEP))
     pygame.draw.circle(screen, color, (cx, cy), int(RAD))
-#Dibuixa les vores de les fitxes.
+    #Dibuixa les vores de les fitxes.
     pygame.draw.circle(screen, BLACK, (cx, cy), int(RAD), 2)
 
 def draw_board(curr_player = 0, end = False):
-  'en una pantalla nova, dibuixa una quadrícula, fitxes, la marca del torn del jugador i fes-la aparèixer.'
+    'en una pantalla nova, dibuixa una quadrícula, fitxes, la marca del torn del jugador i fes-la aparèixer.'
     screen.fill(WHITE if not end else GRAY)
     for i in range(BSIZ):
         for j in range(BSIZ):
@@ -92,7 +84,7 @@ def draw_board(curr_player = 0, end = False):
     for s in stones():
         draw_stone(screen, s.x, s.y, s.color)
     if not end:
-       'el ractangle de color indica a qui li toca'
+        'el ractangle de color indica a qui li toca'
         pygame.draw.rect(screen, PLAYER_COLOR[curr_player], 
         (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT)
         )
@@ -139,8 +131,8 @@ end = False
 
 while not done:
     
-   # Això limita el bucle while a un màxim de 10 vegades per segon.
-# Si ometem això, utilitzarem tota la CPU que puguem.
+    # Això limita el bucle while a un màxim de 10 vegades per segon.
+    # Si ometem això, utilitzarem tota la CPU que puguem.
     clock.tick(10)
     
     for event in pygame.event.get(): 
@@ -166,7 +158,7 @@ while not done:
             else:
                 print("Per moure una fitxa has de clickar dins dels límits del tauler")
 
-	#Actualitzem la pantalla amb .display.update().
+    #Actualitzem la pantalla amb .display.update().
     pygame.display.update()
 # Final:
 pygame.quit()
