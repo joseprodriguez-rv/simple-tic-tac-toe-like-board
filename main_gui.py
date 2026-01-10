@@ -9,13 +9,21 @@ pygame.font.init() #Inicia el sistema de textos de pygame per poder enunciar el 
 # Inicialització d'importació del tauler abstracte programat per separat:
 from abs_board import set_board_up
 
-# 1. DEMANAR LA MIDA A L'USUARI
-str_input = input("Introdueix la mida del tauler (ex: 3, 4, 5...): ")
-BSIZ = int(str_input)
+# 1. DEMANAR LA MIDA A L'USUARI (i mode, que ha de ser un número enter)
+try:
+    str_input = input("Introdueix la mida del tauler (ex: 3, 4, 5...): ")
+    BSIZ = int(str_input)
+except ValueError:
+    print("Valor incorrecte, s'usarà mida 3.")
+    BSIZ = 3
 
 print("Tria el mode (0: Clàssic, 1: Invers): ")
-mode_input = input("Mode: ")
-GAME_MODE = int(mode_input)
+try:
+    mode_input = input("Mode: ")
+    GAME_MODE = int(mode_input)
+except ValueError:
+    print("Opció no vàlida. S'usarà el mode Clàssic (0).")
+    GAME_MODE = 0
 
 # 2. FER ELS CÀLCULS AQUÍ (Abans eren a constants.py)
 HEIGHT = BSIZ * SLOT + (BSIZ + 1) * SEP + ROOM 
