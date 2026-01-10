@@ -9,7 +9,7 @@ pygame.font.init() #Inicia el sistema de textos de pygame per poder enunciar el 
 # Inicialització d'importació del tauler abstracte programat per separat:
 from abs_board import set_board_up
 
-# 1. DEMANAR LA MIDA A L'USUARI (i mode, que ha de ser un número enter)
+# 1. DEMANAR LA MIDA A L'USUARI
 try:
     str_input = input("Introdueix la mida del tauler (ex: 3, 4, 5...): ")
     BSIZ = int(str_input)
@@ -105,11 +105,11 @@ def draw_board(curr_player = 0, end = False):
 #Dibuixa com serà el missatge.
 def dibuixa_missatge_guanyador(screen,curr_player):
     #Escull tipus de lletra i forma el missatge (.render() crea una imatge del text i la suavitza).
-    tipus_lletra = pygame.font.SysFont('Arial',40)
+    tipus_lletra = pygame.font.SysFont('Arial', 60) # HE CANVIAT LA MIDA A 60
     text_final = f"Victoria del Jugador {curr_player + 1}"
-    missatge = tipus_lletra.render(text_final, True, BLACK)
+    missatge = tipus_lletra.render(text_final, True, WHITE) # HE POSAT LLETRA WHITE (BLANCA)
     #Creem un fons
-    amplada_fons, altura_fons = 400, 100
+    amplada_fons, altura_fons = 550, 120 # HE FET EL QUADRE MES GRAN
     #Centrem el fons a la pantalla.
     fons = pygame.Rect(0, 0, amplada_fons, altura_fons)
     fons.center = (WIDTH // 2, HEIGHT // 2) 
@@ -117,9 +117,9 @@ def dibuixa_missatge_guanyador(screen,curr_player):
     #Centrem també el missatge.
     text = missatge.get_rect(center=fons.center)
     
-    #Dibuixa primer el fons blanc i després el text a sobre.
-    pygame.draw.rect(screen, WHITE, fons)
-    pygame.draw.rect(screen, BLACK, fons, 3) #Afegeix una vora.
+    #Dibuixa primer el fons NEGRE (perque es vegi la lletra blanca) i després el text a sobre.
+    pygame.draw.rect(screen, BLACK, fons) 
+    pygame.draw.rect(screen, WHITE, fons, 3) # HE POSAT LA VORA BLANCA
     screen.blit(missatge, text)
     pygame.display.flip()
 
