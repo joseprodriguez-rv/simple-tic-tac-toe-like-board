@@ -1,4 +1,3 @@
-
 from constants import PLAYER_COLOR, NO_PLAYER, GRAY
 from collections import namedtuple
 
@@ -67,57 +66,57 @@ def set_board_up(stones_per_player, size, game_mode=0):
 
     def move_st(i, j):
 
-            dins_del_tauler = (0 <= i < BSIZ) and (0 <= j < BSIZ)
+        dins_del_tauler = (0 <= i < BSIZ) and (0 <= j < BSIZ)
+        
+        if not dins_del_tauler:
+
+            estem_posant = state['stones_count'] < state['max_stones']
+            tinc_fitxa_agafada = state['selected'] is not None
             
-            if not dins_del_tauler:
-
-                estem_posant = state['stones_count'] < state['max_stones']
-                tinc_fitxa_agafada = state['selected'] is not None
-                
-                keep_going = estem_posant or tinc_fitxa_agafada
-                return keep_going, state['current_player'], False
+            keep_going = estem_posant or tinc_fitxa_agafada
+            return keep_going, state['current_player'], False
 
 
-            if state['stones_count'] < state['max_stones']:
-                
-                if board[i][j] != NO_PLAYER:
-                    return True, state['current_player'], False
-
-                board[i][j] = state['current_player']
-                state['stones_count'] += 1
-
-                game_over = check_winner_logic()
-                if game_over:
-                    return True, state['current_player'], True
-
-
-                state['current_player'] = 1 - state['current_player']
+        if state['stones_count'] < state['max_stones']:
+            
+            if board[i][j] != NO_PLAYER:
                 return True, state['current_player'], False
 
-            else:
+            board[i][j] = state['current_player']
+            state['stones_count'] += 1
 
-                if state['selected'] is None:
-                    return False, state['current_player'], False
-
-
-                if board[i][j] != NO_PLAYER:
-
-                    return True, state['current_player'], False
+            game_over = check_winner_logic()
+            if game_over:
+                return True, state['current_player'], True
 
 
-                old_i, old_j = state['selected']
+            state['current_player'] = 1 - state['current_player']
+            return True, state['current_player'], False
 
-                board[old_i][old_j] = NO_PLAYER
-                board[i][j] = state['current_player']
-                state['selected'] = None 
+        else:
 
-
-                game_over = check_winner_logic()
-                if game_over:
-                    return False, state['current_player'], True
-
-                state['current_player'] = 1 - state['current_player']
+            if state['selected'] is None:
                 return False, state['current_player'], False
+
+
+            if board[i][j] != NO_PLAYER:
+
+                return True, state['current_player'], False
+
+
+            old_i, old_j = state['selected']
+
+            board[old_i][old_j] = NO_PLAYER
+            board[i][j] = state['current_player']
+            state['selected'] = None 
+
+
+            game_over = check_winner_logic()
+            if game_over:
+                return False, state['current_player'], True
+
+            state['current_player'] = 1 - state['current_player']
+            return False, state['current_player'], False
 
     def draw_txt(end_game=False):
         print("\n--- TAULER ---")
