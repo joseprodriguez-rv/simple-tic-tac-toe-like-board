@@ -73,7 +73,7 @@ def draw_stone(screen, i, j, color):
     pygame.draw.circle(screen, BLACK, (cx, cy), int(RAD), 2)
 
 def draw_board(curr_player = 0, end = False):
-    'en una pantalla nova, dibuixa una quadrícula, fitxes, la marca del torn del jugador i fes-la aparèixer.'
+    #en una pantalla nova, dibuixa una quadrícula, fitxes, la marca del torn del jugador i fes-la aparèixer.
     screen.fill(WHITE if not end else GRAY)
     for i in range(BSIZ):
         for j in range(BSIZ):
@@ -81,7 +81,7 @@ def draw_board(curr_player = 0, end = False):
     for s in stones():
         draw_stone(screen, s.x, s.y, s.color)
     if not end:
-        'el ractangle de color indica a qui li toca'
+        #el ractangle de color indica a qui li toca
         pygame.draw.rect(screen, PLAYER_COLOR[curr_player], 
         (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT)
         )
@@ -136,16 +136,16 @@ while not done:
     clock.tick(10)
     
     for event in pygame.event.get(): 
-        "l'usuari ha fet algo"
+        #l'usuari ha fet algo
         if event.type == pygame.QUIT:
-         'L'usuari ha fet clic a 'tancar finestra', ha establert la bandera per sortir del bucle.'
+         #El usuari ha fet clic a 'tancar finestra', ha establert la bandera per sortir del bucle.
             done = True
         if event.type == pygame.MOUSEBUTTONDOWN and not end:
             i,j = trans_coord(*event.pos)
-            "El joc està en marxa i l'usuari ha fet clic a alguna cosa"
+            #El joc està en marxa i l'usuari ha fet clic a alguna cosa
             #Únicament mou o selecciona fitxa dins dels límits del tauler.
             if i != -1:
-                "L'usuari ha de fer clic en una casella de destinació lliure; en cas contrari, ignora l'esdeveniment."
+                #L'usuari ha de fer clic en una casella de destinació lliure; en cas contrari, ignora l'esdeveniment.
                 if stone_selected:
                     stone_selected, curr_player, end = move_st(i,j)
                 else:
