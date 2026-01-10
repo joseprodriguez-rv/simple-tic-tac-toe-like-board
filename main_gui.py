@@ -1,16 +1,9 @@
-"""
-Author: Jose L Balcazar, ORCID 0000-0003-4248-4528 
-Copyleft: MIT License (https://en.wikipedia.org/wiki/MIT_License)
 
-Pygame-based handling of a simple tic-tac-toe-like board, 2021.
-Intended for Grau en Intel-ligencia Artificial, Programacio i Algorismes 1.
-"""
-
-# Import library for game programming 
+# Importa la biblioteca per a la programació de jocs
 import pygame
 
-# Import: colors BLACK, GRAY, WHITE, PLAYER_COLOR; 
-#         board dimensions BSIZ, WIDTH, HEIGHT, SLOT, SEP, ROOM, RAD
+# Importa: colors BLACK, GRAY, WHITE, PLAYER_COLOR; 
+#         dimensions del tauler BSIZ, WIDTH, HEIGHT, SLOT, SEP, ROOM, RAD
 from constants import *
 pygame.font.init() #Inicia el sistema de textos de pygame per poder enunciar el guanyador
 
@@ -26,32 +19,31 @@ ST_PLAYER = (BSIZ**2 - 1) // 2  # Càlcul automàtic de fitxes
 
 print(f"Jugarem amb un tauler de {BSIZ}x{BSIZ} i {ST_PLAYER} fitxes per jugador.")
 
-# Initialize the game engine, indicate a caption and
-# set the height and width of the screen.
-
+# Inicialitza el motor del joc, indica un peu de foto i
+# defineix l'alçada i l'amplada de la pantalla.
 pygame.init()
 screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
-pygame.display.set_caption("A name here for your game")
+pygame.display.set_caption("X en ratlla")
 clock = pygame.time.Clock()
 
-# Import initialization of the separately programmed abstract board:
+# Inicialització d'importació del tauler abstracte programat per separat:
 from abs_board import set_board_up
 
-# Prepare board:
-# this will set up all stones as unplayed, select a first stone to play,
-# and obtain functions to handle them as follows:
-#   the call stones() allows one to loop on all stones,
-#   the call select_st(i, j) marks as selected the stone at these coordinates,
-#   the call move_st(i, j) 
-#     if the square at these coordinates is free, moves the selected  
-#     stone there, changes player, unselects the stone and checks for 
-#     end of game; otherwise, does nothing, leaving the stone selected;
-#     returns: bool "stone still selected", next player (may be the same), 
-#     and bool "end of game"
-#   the call to draw_txt(end) prints a text-based version of the board
+# Prepara el tauler:
+# això configurarà totes les pedres com a no jugades, seleccionarà una primera fitxa per jugar,
+# i obtindrà funcions per gestionar-les de la següent manera:
+# la crida stones() permet fer un bucle sobre totes les fitxes,
+# la crida select_st(i, j) marca com a seleccionada la fitxa en aquestes coordenades,
+# la crida move_st(i, j)
+# si la casella en aquestes coordenades està lliure, mou la fitxa seleccionada
+# allà, canvia de jugador, desselecciona la fitxa i comprova el
+# final de la partida; altrament, no fa res, deixant la fitxa seleccionada;
+# retorna: bool "pedra encara seleccionada", següent jugador (pot ser el mateix),
+# i bool "final de la partida"
+# la crida a draw_txt(end) imprimeix una versió basada en text del tauler
 stones, select_st, move_st, draw_txt = set_board_up()
 
-# Grid:
+# Quadrícula:
 def trans_coord(x, y):
     i = ((x - ROOM - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la columna de la matriu.
 	j = ((y - SEP)//(SLOT + SEP)) # Tradueix el clic del ratolí a la fila de la matriu obtenint la casella exacta.
@@ -122,23 +114,24 @@ def dibuixa_missatge_guanyador(screen,curr_player):
    	pygame.draw.rect(screen, BLACK, fons, 3) #Afegeix una vora.
     screen.blit(missatge, text)
 
-# set_board_up() already selects a first stone; set curr_player to zero.
+# set_board_up() ja selecciona una primera fitxa; estableix curr_player a zero
 stone_selected = True
 curr_player = 0
 
-# Show grid and stones:
+# Mostra la quadrícula i les pedres:
 draw_board()
 
-# Loop until the user clicks the close button.
+
+# Repetició fins que l'usuari fa clic al botó de tancament.
 done = False
 
-# Play until game ends
+# Juga fins que acabi el joc
 end = False
 
 while not done:
     
-    # This limits the while loop to a max of 10 times per second.
-    # Leave this out and we will use all CPU we can.
+   # Això limita el bucle while a un màxim de 10 vegades per segon.
+# Si ometem això, utilitzarem tota la CPU que puguem.
     clock.tick(10)
     
   for event in pygame.event.get(): 
@@ -165,6 +158,6 @@ while not done:
 		dibuixa_missatge_guanyador(screen,curr_player)
 	#Actualitzem la pantalla amb .display.update().
 	pygame.display.update()
-# Friendly finish-up:
+# Final:
 pygame.quit()
 	pygame.display.flip()
