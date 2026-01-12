@@ -41,7 +41,7 @@ print(f"Jugarem amb un tauler de {BSIZ}x{BSIZ} i {ST_PLAYER} fitxes per jugador.
 # defineix l'alçada i l'amplada de la pantalla.
 pygame.init()
 screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
-pygame.display.set_caption("X en ratlla")
+pygame.display.set_caption("N-en-ratlla Dinàmic")
 clock = pygame.time.Clock()
 
 # Prepara el tauler:
