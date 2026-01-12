@@ -1,3 +1,8 @@
+"""
+Autors: Ariel i Josep
+Data: 2024
+Descripció: Fitxer de constants. Conté colors i mides fixes que no canvien
+"""
 
 # BSIZ (board side size) i ST_PLAYER (stones per player) s'ha passat al main per aixi puguin ser introduides, per tant deixen de ser constants
 
