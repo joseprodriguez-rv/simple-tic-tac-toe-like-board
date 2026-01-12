@@ -1,6 +1,6 @@
 """
 Autors: Ariel i Josep
-Data: 2024
+Data: 2026
 Descripció: Backend del joc (Lògica pura).
 Gestiona el tauler, els moviments, la detecció de victòria i 
 els diferents modes de joc (Clàssic i Invers).
