@@ -1,3 +1,8 @@
+"""
+Autors: Ariel i Josep
+Data: 2026
+Descripció: Programa principal
+"""
 # Importa la biblioteca per a la programació de jocs
 import pygame
 
