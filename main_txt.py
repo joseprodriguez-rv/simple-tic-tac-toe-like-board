@@ -1,6 +1,6 @@
 """
 Autors: Ariel i Josep
-Data: 2024
+Data: 2026
 Descripció: Interfície de Text (Frontend).
 Recull la configuració de l'usuari i executa el bucle principal del joc.
 """
