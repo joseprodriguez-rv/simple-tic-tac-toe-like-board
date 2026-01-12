@@ -24,7 +24,7 @@ def set_board_up(stones_per_player, size, game_mode=0):
     board = [[NO_PLAYER for _ in range(BSIZ)] for _ in range(BSIZ)]
     
     # Les variables canvien durant la partida per tant un diccionari q es mutable permet canviar-lo
-    state = {
+    estat = {
         'current_player': 0,
         'selected': None,
         'stones_count': 0,
@@ -50,8 +50,8 @@ def set_board_up(stones_per_player, size, game_mode=0):
         """
         # 1. Coordenades dins del tauler i fitxa pertany al jugador q toca
         if 0 <= i < BSIZ and 0 <= j < BSIZ:
-            if board[i][j] == state['current_player']:
-                state['selected'] = (i, j)
+            if board[i][j] == estat['current_player']:
+                estat['selected'] = (i, j)
                 return True
         return False
 
@@ -63,7 +63,7 @@ def set_board_up(stones_per_player, size, game_mode=0):
         Retorna True si algú ha fet el tres en ratlla.
         """
 
-        p = state['current_player']
+        p = estat['current_player']
         n = BSIZ
 
         # 1. FILES
@@ -105,8 +105,8 @@ def set_board_up(stones_per_player, size, game_mode=0):
         Retorna True si la partida s'ha d'acabar.
         """
         if end():
-            if state['mode'] == 1: # Mode Invers: Si fas línia, guanya l'altre
-                state['current_player'] = 1 - state['current_player']
+            if estat['mode'] == 1: # Mode Invers: Si fas línia, guanya l'altre
+                estat['current_player'] = 1 - estat['current_player']
             return True
         return False
 
@@ -120,61 +120,61 @@ def set_board_up(stones_per_player, size, game_mode=0):
         dins_del_tauler = (0 <= i < BSIZ) and (0 <= j < BSIZ)
         
         if not dins_del_tauler:  # Si esta fora, mantenim l'estat actual.
-            estem_posant = state['stones_count'] < state['max_stones']
-            tinc_fitxa_agafada = state['selected'] is not None
+            estem_posant = estat['stones_count'] < estat['max_stones']
+            tinc_fitxa_agafada = estat['selected'] is not None
             continua_fase = estem_posant or tinc_fitxa_agafada
-            return continua_fase, state['current_player'], False
+            return continua_fase, estat['current_player'], False
 
         # fase1: posar
-        if state['stones_count'] < state['max_stones']:
+        if estat['stones_count'] < estat['max_stones']:
             
             # Si la casella està ocupada, ignorem
             if board[i][j] != NO_PLAYER:
-                return True, state['current_player'], False
+                return True, estat['current_player'], False
 
             # Posem la fitxa
-            board[i][j] = state['current_player']
-            state['stones_count'] += 1
+            board[i][j] = estat['current_player']
+            estat['stones_count'] += 1
 
             # Mirem si ha guanyat (o perdut)
             game_over = check_winner_logic()
             if game_over:
-                return True, state['current_player'], True
+                return True, estat['current_player'], True
 
             # Canviem torn
-            state['current_player'] = 1 - state['current_player']
+            estat['current_player'] = 1 - estat['current_player']
             
             # Si count < max, retornem True (seguim posant/demanant destí).
             # Si count == max, retornem False (sortim del bucle i demanarem Origen).
-            seguim_posant = state['stones_count'] < state['max_stones']
+            seguim_posant = estat['stones_count'] < estat['max_stones']
             
-            return seguim_posant, state['current_player'], False
+            return seguim_posant, estat['current_player'], False
 
         # fase2: moure
         else:
             # Si no hi ha res seleccionat, no podem moure
-            if state['selected'] is None:
-                return False, state['current_player'], False
+            if estat['selected'] is None:
+                return False, estat['current_player'], False
 
             # Si el destí està ocupat, ignorem
             if board[i][j] != NO_PLAYER:
-                return True, state['current_player'], False
+                return True, estat['current_player'], False
 
             # Fem el moviment
-            old_i, old_j = state['selected']
+            old_i, old_j = estat['selected']
 
             board[old_i][old_j] = NO_PLAYER
-            board[i][j] = state['current_player']
-            state['selected'] = None 
+            board[i][j] = estat['current_player']
+            estat['selected'] = None 
 
             # Mirem si ha guanyat
             game_over = check_winner_logic()
             if game_over:
-                return False, state['current_player'], True
+                return False, estat['current_player'], True
 
             # Canviem torn
-            state['current_player'] = 1 - state['current_player']
-            return False, state['current_player'], False
+            estat['current_player'] = 1 - estat['current_player']
+            return False, estat['current_player'], False
 
     def draw_txt(end_game=False):
         """
@@ -206,7 +206,7 @@ def set_board_up(stones_per_player, size, game_mode=0):
 
         # La partida s'ha acabat
         if end_game:
-            guanyador_num = state['current_player']
+            guanyador_num = estat['current_player']
             guanyador_lletra = simbols[guanyador_num]
             print(f"JOC ACABAT! Guanyador: {guanyador_lletra}")
     
