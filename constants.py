@@ -1,6 +1,6 @@
 """
 Autors: Ariel i Josep
-Data: 2024
+Data: 2026
 Descripció: Fitxer de constants. Conté colors i mides fixes que no canvien
 """
 
